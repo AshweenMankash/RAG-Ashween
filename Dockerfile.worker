@@ -1,0 +1,17 @@
+FROM python:3.10-slim
+
+WORKDIR /app/worker
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential gcc  python3-dev cmake\
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --upgrade pip setuptools wheel
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD ["celery","-A", "main", "worker", "--loglevel=debug"]
