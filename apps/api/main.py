@@ -17,17 +17,6 @@ from PyPDF2 import PdfReader
 
 app = FastAPI()
 
-def log_task(task_type: str, task_id: str, user_id: str, details: dict):
-    db.insert({
-        "task_type": task_type,
-        "task_id": task_id,
-        "user_id": user_id,
-        "details": json.dumps(details),
-        "timestamp": datetime.utcnow(),
-        "status": "PENDING"
-    }, table="task_log")
-
-
 @app.get("/health")
 def health():
     return {"status": "ok"}
@@ -96,8 +85,11 @@ async def ingest_docs(file: UploadFile=None, user: User = Depends(get_current_us
         raise Exception("No File Given")
     
     
-    task = ingest_documents(user=doc['user'], documents=doc['document'])
-    return TaskResponse(task_id=task.id)
+    ingest_documents(user=doc['user'], documents=doc['document'])
+    
+    return {
+        "msg": "Your document has been processed"
+    }
 
 @app.post("/query")
 def ask_question(req: QueryRequest, user: User = Depends(get_current_user)):
@@ -131,24 +123,7 @@ def ask_question(req: QueryRequest, user: User = Depends(get_current_user)):
         "answer": resp.json()["choices"][0]["text"],
         "context": [d.content for d in result],
     }
-    # return TaskResponse(task_id="12345")  # Placeholder for task ID
 
-    # task = process_query(user=req.user.dict(), question=req.question, filters=req.filters)
-    # log_task("query", task.id, req.user.user_id, {"question": req.question, "filters": req.filters})
-    # return TaskResponse(task_id=task.id)
-
-
-@app.get("/result/{task_id}", response_model=ResultResponse)
-def get_result(task_id: str):
-    result = AsyncResult(task_id)
-    if result.state == "PENDING":
-        return ResultResponse(status="pending")
-    elif result.state == "FAILURE":
-        return ResultResponse(status="failed", error=str(result.info))
-    elif result.state == "SUCCESS":
-        return ResultResponse(status="success", result=result.result)
-    else:
-        return ResultResponse(status=result.state.lower())
     
 
 @app.get("/documents/{user_id}")
