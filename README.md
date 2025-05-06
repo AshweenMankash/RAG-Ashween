@@ -43,3 +43,21 @@ Since I am not using OpenAIEmbedding.
 docker compose up --build
 
 I am attaching a postman export file to give you the requests.
+
+also create an .env file in the root directory and insert
+
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=vector_db
+DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/vector_db
+OPEN_ROUTER_API_KEY= <Visit Open Router and generate an API key and insert it here>
+broker_url=redis://redis:6379/0
+result_backend=redis://redis:6379/1
+task_serializer=json
+result_serializer=json
+accept_content=json
+SECRET_PASS_KEY="Your secret key, hope fully something strong"
+
+
+
+I hope you like it!
