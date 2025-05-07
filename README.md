@@ -42,7 +42,8 @@ Since I am not using OpenAIEmbedding.
 
 docker compose up --build
 
-I am attaching a postman export file to give you the requests.
+I am attaching a postman link to the requests.
+https://bold-trinity-443557.postman.co/workspace/My-Workspace~b214d269-e6cc-44a5-883a-429afea6615b/collection/13664840-7d7cfaca-4fe9-444f-a0df-7ed20478f9c0?action=share&creator=13664840
 
 also create an .env file in the root directory and insert
 
